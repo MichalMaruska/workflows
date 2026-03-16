@@ -84,7 +84,7 @@ jobs:
           git add -A
           git diff --cached --quiet || \
             git commit -m "chore: add $(dpkg-parsechangelog \
-              -l ../debian/changelog --show-field Package) \
+              -l ../debian/changelog --show-field Source) \
               $(dpkg-parsechangelog \
               -l ../debian/changelog --show-field Version) [skip ci]"
           git push
