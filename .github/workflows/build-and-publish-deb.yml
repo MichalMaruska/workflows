@@ -27,20 +27,6 @@ jobs:
             --tool="apt-get -y --no-install-recommends"
           sudo rm -f *-build-deps_*.deb
 
-      - name: Import GPG key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-        run: |
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          gpgconf --kill gpg-agent
-
-          echo "$GPG_PRIVATE_KEY" | base64 --decode | gpg --batch --import
-          GPG_FINGERPRINT=$(gpg --list-secret-keys --with-colons | \
-            awk -F: '/^fpr/{print $10; exit}')
-          echo "$GPG_FINGERPRINT:6:" | gpg --import-ownertrust
 
       - name: Build Debian package
         run: |
