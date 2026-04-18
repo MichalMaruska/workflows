@@ -10,6 +10,10 @@ on:
       GPG_PRIVATE_KEY:
         required: true
 
+permissions:
+  contents: write
+  packages: write # Optional, but good if you use GHCR
+
 jobs:
   build:
     # We still use an Ubuntu runner to host the Docker engine
