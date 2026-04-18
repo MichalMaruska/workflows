@@ -1,5 +1,4 @@
-name: Build and Publish Debian Package
-
+name: Build and Release Debian Package
 on:
   workflow_call:
     inputs:
@@ -12,8 +11,13 @@ on:
         required: true
 
 jobs:
-  build-and-publish:
+  build:
+    # We still use an Ubuntu runner to host the Docker engine
     runs-on: ubuntu-latest
+
+    container:
+      # this is what we build for: SID
+      image: debian:unstable-slim
 
     steps:
       - name: Checkout source
