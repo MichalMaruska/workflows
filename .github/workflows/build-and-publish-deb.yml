@@ -67,3 +67,13 @@ jobs:
           mkdir -p /tmp/debs
           mv ../*.deb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true
 
+      - name: Extract Version and Tag
+        id: meta
+        run: |
+          # Extract the version string (e.g., 1.2.3-1)
+          VERSION=$(dpkg-parsechangelog -S Version)
+          DISTRIBUTION=$(dpkg-parsechangelog -S Distribution)
+          TAG_NAME="$DISTRIBUTION/$VERSION"
+
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
