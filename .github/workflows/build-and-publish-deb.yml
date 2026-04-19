@@ -22,6 +22,9 @@ jobs:
     container:
       # this is what we build for: SID
       image: debian:unstable-slim
+      # Force the container to run as the same UID as the host runner
+      # mmc: b/c checkout uses "builder"
+      # options: --user 1001
 
     steps:
       - name: install git
@@ -59,17 +62,21 @@ jobs:
           DEBEMAIL: "mmaruska+deb@gmail.com"
           DEBFULLNAME: "Michal Maruska"
         run: |
+          # mess with permissions/ownership: actions/checkout works outside the container
+          # as worker, but we're now root, to be able to run apt.
+          su builder -c "git config --global --add safe.directory ."
           # --snapshot: creates a temporary version (useful for CI)
           # --release: prepares it for a real release
           # --auto: tries to guess the next version number based on tags
-          gbp dch --release --auto --debian-branch=main --spawn-editor=never
+          su builder -c "gbp dch --release --auto --debian-branch=main --spawn-editor=never"
+
 
       - name: Build Debian package
         run: |
           # su builder -c "dpkg-buildpackage -us -uc -b"
-          dpkg-buildpackage -us -uc
-          mkdir -p /tmp/debs
-          mv ../*.deb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true
+          su builder -c "dpkg-buildpackage -us -uc"
+          su builder -c "mkdir -p /tmp/debs"
+          su builder -c "mv ../*.deb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true"
 
       - name: Extract Version and Tag
         id: meta
