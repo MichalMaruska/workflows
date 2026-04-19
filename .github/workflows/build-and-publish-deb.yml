@@ -72,6 +72,7 @@ jobs:
       - name: Build Debian package
         run: |
           # su builder -c "dpkg-buildpackage -us -uc -b"
+          chown builder ../
           su builder -c "dpkg-buildpackage -us -uc"
           su builder -c "mkdir -p /tmp/debs"
           su builder -c "mv ../*.deb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true"
