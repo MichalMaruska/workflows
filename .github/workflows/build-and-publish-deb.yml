@@ -61,7 +61,8 @@ jobs:
         run: |
           # mess with permissions/ownership: actions/checkout works outside the container
           # as worker, but we're now root, to be able to run apt.
-          su builder -c "git config --global --add safe.directory ."
+          # su builder -c "git config --global --add safe.directory ."
+
           # --snapshot: creates a temporary version (useful for CI)
           # --release: prepares it for a real release
           # --auto: tries to guess the next version number based on tags
