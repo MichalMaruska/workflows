@@ -51,12 +51,14 @@ jobs:
           rm -f *-build-deps_*.deb
 
       - name: Update Changelog (dch)
+        env:
+          DEBEMAIL: "mmaruska+deb@gmail.com"
+          DEBFULLNAME: "Michal Maruska"
         run: |
-          # Example: Incrementing the version
-          dch --no-auto-nmu -i "Automated build for sid"
-          # --distribution unstable
-          # Finalize the entry
-          dch -r --no-auto-nmu ""
+          # --snapshot: creates a temporary version (useful for CI)
+          # --release: prepares it for a real release
+          # --auto: tries to guess the next version number based on tags
+          gbp dch --release --auto --debian-branch=main
 
       - name: Build Debian package
         run: |
