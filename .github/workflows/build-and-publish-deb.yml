@@ -106,3 +106,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      # - name: Trigger Apt-Manager
+      #   run: |
+      #     # Notify the hosting repo to pull this specific tag
+      #     curl -L \
+      #       -X POST \
+      #       -H "Accept: application/vnd.github+json" \
+      #       -H "Authorization: Bearer ${{ secrets.MY_PAT }}" \
+      #       https://api.github.com/repos/OWNER/APT_MANAGER_REPO/dispatches \
+      #       -d "{\"event_type\": \"new_release\", \"client_payload\": {\"tag\": \"${{ steps.meta.outputs.TAG_NAME }}\", \"repo\": 
+      #            \"${{ github.repository }}\"}}"
