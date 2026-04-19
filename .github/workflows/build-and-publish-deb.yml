@@ -3,7 +3,7 @@ on:
   workflow_call:
     inputs:
       apt_repo:
-        description: 'The apt repository (e.g. maruska/apt-repo)'
+        description: 'The apt repository (e.g. michal-maruska/apt-repo)'
         required: true
         type: string
 
@@ -35,7 +35,7 @@ jobs:
         with:
           ref: main
           # mmc: full.
-          # up to previous tag
+          # todo: up to previous tag
           fetch-depth: 0 # Get all history for tagging
 
       - name: Install dependencies
@@ -60,12 +60,13 @@ jobs:
           DEBFULLNAME: "Michal Maruska"
         run: |
           # mess with permissions/ownership: actions/checkout works outside the container
-          # as worker, but we're now root, to be able to run apt.
           # su builder -c "git config --global --add safe.directory ."
 
           # --snapshot: creates a temporary version (useful for CI)
           # --release: prepares it for a real release
           # --auto: tries to guess the next version number based on tags
+          su builder -c "gbp --list-cmds"
+          su builder -c "which dch"
           su builder -c "gbp dch --release --auto --debian-branch=main --spawn-editor=never"
 
 
