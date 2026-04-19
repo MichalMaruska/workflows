@@ -82,9 +82,10 @@ jobs:
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
 
-      - name: Release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
-          files: |
-            /tmp/debs/*.deb
-            /tmp/debs/*.changes
-            /tmp/debs/*.dsc
+        with:
+          tag_name: ${{ steps.meta.outputs.TAG_NAME }}
+          files: /tmp/debs/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
