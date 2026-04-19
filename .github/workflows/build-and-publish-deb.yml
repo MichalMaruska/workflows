@@ -50,6 +50,13 @@ jobs:
           #  --tool="apt-get -y --no-install-recommends"
           rm -f *-build-deps_*.deb
 
+      - name: Update Changelog (dch)
+        run: |
+          # Example: Incrementing the version
+          dch -i "Automated build for sid"
+          # --distribution unstable
+          dch -r "" # Finalize the entry
+
       - name: Build Debian package
         run: |
           # su builder -c "dpkg-buildpackage -us -uc -b"
