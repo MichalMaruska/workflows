@@ -46,6 +46,14 @@ jobs:
           useradd -m builder
           # 2. Fix permissions (GitHub Actions mounts the repo as root)
           chown -R builder:builder .
+
+          # I can use my specific versions!
+          apt-get install -y software-properties-common curl
+          curl https://michal-maruska.github.io/apt-repo/maruska.asc -o /etc/apt/trusted.gpg.d/maruska.asc
+          # apt-add-repository -y
+          echo "deb [signed-by=/etc/apt/trusted.gpg.d/maruska.asc] https://michal-maruska.github.io/apt-repo sid main" > /etc/apt/sources.list.d/maruska.list
+
+          apt-get update
           # 3. Install build-deps (this still needs root)
           # We use mk-build-deps to create a dummy package of dependencies
           mk-build-deps -ir -t "apt-get -y --no-install-recommends"
