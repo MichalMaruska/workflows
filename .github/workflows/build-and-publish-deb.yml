@@ -76,7 +76,7 @@ jobs:
           chown builder ../
           su builder -c "dpkg-buildpackage -us -uc"
           su builder -c "mkdir -p /tmp/debs"
-          su builder -c "mv ../*.deb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true"
+          su builder -c "mv ../*.deb ../*.udeb ../*.changes ../*.dsc ../*.tar.* /tmp/debs/ 2>/dev/null || true"
 
       - name: Extract Version and Tag
         id: meta
