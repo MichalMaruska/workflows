@@ -5,8 +5,7 @@
 FROM debian:unstable-slim
 RUN apt-get update && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
-            software-properties-common curl \
-    && rm -rf /var/lib/apt/lists/*   && \
+            software-properties-common curl  && \
       # reprepro \
       # curl \
       # ca-certificates \
@@ -28,4 +27,5 @@ RUN apt-get update && apt-get dist-upgrade -y && \
       devscripts \
       debhelper \
       git-buildpackage python3-typing-extensions && \
-      apt-get autoremove -y
+      apt-get autoremove -y && \
+      rm -rf /var/lib/apt/lists/*
