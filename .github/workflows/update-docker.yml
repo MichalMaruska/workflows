@@ -1,0 +1,43 @@
+name: Update Docker image for Debian Package builds
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'   # weekly, Monday 3am
+  workflow_dispatch:        # manual rebuild when you need it
+
+env:
+  IMAGE: ghcr.io/${{ github.repository_owner }}/debian-builder
+
+jobs:
+  build: # name
+    runs-on: ubuntu-latest
+#    env:                      # job-level: available to all steps in this job
+#      SOMETHING: value
+    steps:
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3  # needed for registry cache
+
+      - uses: docker/metadata-action@v5      # generates tags cleanly
+        id: meta
+        with:
+          images: ${{ env.IMAGE}}
+
+      - uses: docker/build-push-action@v6
+        with:
+          file: Dockerfile
+          #docker/xxx .builder
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          #    tags: |
+          #      ghcr.io/michal-maruska/debian-builder:latest
+          #      ghcr.io/michal-maruska/debian-builder:${{ github.run_id }}
+          cache-from: type=registry,ref=${{ env.IMAGE}}:buildcache
+          cache-to: type=registry,ref=${{ env.IMAGE}}:buildcache,mode=max
+
+
