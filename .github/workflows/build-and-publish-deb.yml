@@ -19,9 +19,6 @@ jobs:
     container:
       # this is what we build for: SID
       image:  ghcr.io/${{ github.repository_owner }}/debian-builder:main
-      # Force the container to run as the same UID as the host runner
-      # mmc: b/c checkout uses "builder"
-      # options: --user 1001
 
     steps:
       - name: install git
