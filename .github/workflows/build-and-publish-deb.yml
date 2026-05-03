@@ -4,8 +4,8 @@ on:
     inputs:
       apt_repo:
         description: 'The apt repository (e.g. michal-maruska/apt-repo)'
-        required: true
         type: string
+        default: "michal-maruska/apt-repo"
     secrets:
       PAT_TOKEN:
         required: true
