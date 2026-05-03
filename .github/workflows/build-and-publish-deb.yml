@@ -69,9 +69,10 @@ jobs:
         run: |
           # Extract the version string (e.g., 1.2.3-1)
           VERSION=$(dpkg-parsechangelog -S Version)
+          # cannot use :
+          SAFE_VERSION=$(echo "$VERSION" | sed 's/:/_epoch/g; s/~/_/g')
           DISTRIBUTION=$(dpkg-parsechangelog -S Distribution)
-          TAG_NAME="$DISTRIBUTION/$VERSION"
-
+          TAG_NAME="$DISTRIBUTION/$SAFE_VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
 
