@@ -96,16 +96,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Notify apt-repo
+      - name: Notify apt-repository
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
-          gh api repos/${{ github.repository_owner }}/apt-repo/dispatches \
+          gh api repos/${{ inputs.apt_repo }}/dispatches \
           --method POST \
           --field event_type=new-deb-package \
           --field client_payload[repository]=${{ github.repository }} \
           --field client_payload[run_id]=${{ github.run_id }} \
           --field client_payload[version]=${{ steps.meta.outputs.TAG_NAME }}
+
+          echo "::notice::Triggered apt-repo: https://github.com/${{ inputs.apt_repo }}/actions"
 
       # - name: Trigger Apt-Manager
       #   run: |
