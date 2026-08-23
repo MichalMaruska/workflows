@@ -48,16 +48,17 @@ jobs:
       matrix: ${{ steps.build.outputs.matrix }}
     steps:
       - id: build
+        name: Discover online runners
         run: |
-          nodes=$(gh api repos/${{ github.repository }}/actions/runners \
-            --jq '[.runners[] | select(.status=="online") | .labels[].name] | unique')
-          # filter down to your arm64 node labels specifically, then emit as JSON
+          nodes=$(gh api orgs/${{ github.repository_owner }}/actions/runners \
+            --jq '[.runners[] | select(.status=="online" and .busy==false) | .labels[].name] | unique')
           echo "matrix={\"node\":$nodes}" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   rebuild-debspawn-arm64:
     needs: discover-runners
+    if: needs.discover-runners.outputs.matrix != '{"node":[]}'
     strategy:
       matrix: ${{ fromJson(needs.discover-runners.outputs.matrix) }}
     runs-on: [self-hosted, arm64, "${{ matrix.node }}"]
