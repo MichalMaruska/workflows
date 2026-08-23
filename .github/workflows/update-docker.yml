@@ -65,3 +65,17 @@ jobs:
       - name: Update debspawn sid chroot
         run: |
           sudo debspawn update sid
+
+  watchdog:
+    runs-on: ubuntu-latest
+    needs: discover-runners
+    steps:
+      - run: |
+          sleep 600  # your timeout, e.g. 10 min
+          # find jobs still queued for this run and cancel them
+          gh api repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs \
+            --jq '.jobs[] | select(.status=="queued") | .run_id' | \
+            xargs -I{} gh api -X POST repos/${{ github.repository }}/actions/runs/{}/cancel
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
