@@ -6,12 +6,9 @@ FROM debian:unstable-slim
 RUN apt-get update && apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
             software-properties-common curl  && \
-      # reprepro \
-      # curl \
-      # ca-certificates \
-      # gnupg \
-
-
+      # reprepro
+      # ca-certificates
+      # gnupg
       # 1. Create a build user
       useradd -m builder && \
       # I can use my specific versions!
