@@ -42,12 +42,25 @@ jobs:
           cache-from: type=registry,ref=${{ env.IMAGE}}:buildcache
           cache-to: type=registry,ref=${{ env.IMAGE}}:buildcache,mode=max
 
+  discover-runners:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.build.outputs.matrix }}
+    steps:
+      - id: build
+        run: |
+          nodes=$(gh api repos/${{ github.repository }}/actions/runners \
+            --jq '[.runners[] | select(.status=="online") | .labels[].name] | unique')
+          # filter down to your arm64 node labels specifically, then emit as JSON
+          echo "matrix={\"node\":$nodes}" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
   rebuild-debspawn-arm64:
+    needs: discover-runners
     strategy:
-      matrix:
-        runner: [raspberrypi, orangepi5]
-    runs-on: ${{ matrix.runner }}
+      matrix: ${{ fromJson(needs.discover-runners.outputs.matrix) }}
+    runs-on: [self-hosted, arm64, "${{ matrix.node }}"]
     steps:
       - name: Update debspawn sid chroot
         run: |
