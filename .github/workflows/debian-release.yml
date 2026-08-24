@@ -1,4 +1,4 @@
-name: Create a release out of artifacts for debian packages
+name: Release from debian artifacts
 
 # out of all artifacts, we take the N groups with debian packages
 
