@@ -106,6 +106,38 @@ jobs:
           fetch-depth: 0 # Get all history for tagging
           submodules: true
 
+      - name: Resolve upstream sources
+        id: upstream
+        run: |
+          set -eu
+          repo=""
+          ref=""
+          f=debian/upstream-source
+          if [ -f "$f" ]; then
+            r=$(sed -nE 's/^repo[[:space:]]*=[[:space:]]*//p' "$f" | head -n1)
+            v=$(sed -nE 's/^ref[[:space:]]*=[[:space:]]*//p' "$f" | head -n1)
+            if [ -n "$r" ]; then repo="$r"; fi
+            if [ -n "$v" ]; then ref="$v"; fi
+          fi
+          echo "repo=$repo" >> "$GITHUB_OUTPUT"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout upstream sources
+        if: steps.upstream.outputs.repo != ''
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.upstream.outputs.repo }}
+          ref: ${{ steps.upstream.outputs.ref }}
+          path: _upstream
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Merge upstream sources into workspace
+        if: steps.upstream.outputs.repo != ''
+        run: |
+          set -eux
+          rm -rf _upstream/.git _upstream/debian
+          cp -a _upstream/. .
+          rm -rf _upstream
 
       - name: Install dependencies
         run: |
@@ -167,6 +199,39 @@ jobs:
           # let's try:  we do rm -rf ourselves.... and making the repo safe?? todo!
           clean: false
           set-safe-directory: false
+
+      - name: Resolve upstream sources
+        id: upstream
+        run: |
+          set -eu
+          repo=""
+          ref=""
+          f=debian/upstream-source
+          if [ -f "$f" ]; then
+            r=$(sed -nE 's/^repo[[:space:]]*=[[:space:]]*//p' "$f" | head -n1)
+            v=$(sed -nE 's/^ref[[:space:]]*=[[:space:]]*//p' "$f" | head -n1)
+            if [ -n "$r" ]; then repo="$r"; fi
+            if [ -n "$v" ]; then ref="$v"; fi
+          fi
+          echo "repo=$repo" >> "$GITHUB_OUTPUT"
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout upstream sources
+        if: steps.upstream.outputs.repo != ''
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ steps.upstream.outputs.repo }}
+          ref: ${{ steps.upstream.outputs.ref }}
+          path: _upstream
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Merge upstream sources into workspace
+        if: steps.upstream.outputs.repo != ''
+        run: |
+          set -eux
+          rm -rf _upstream/.git _upstream/debian
+          cp -a _upstream/. .
+          rm -rf _upstream
 
       - name: debspawn build
         if: needs.update-changelog.outputs.arch_all_only != 'true'
