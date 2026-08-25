@@ -33,6 +33,7 @@ jobs:
     container:
       # this is what we build for: SID
       image:  ghcr.io/${{ github.repository_owner }}/debian-builder:main
+      options: --init
       # for now the image is not public ...
       credentials:
         username: ${{ github.actor }}
