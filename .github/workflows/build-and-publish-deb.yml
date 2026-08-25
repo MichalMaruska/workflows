@@ -173,8 +173,8 @@ jobs:
         run: |
           if grep "^Architecture: " debian/control| grep -v ": all";
           then
-            su builder -c "dpkg-buildpackage -us -uc -B" || { \
-              cat ${{ github.workspace }}/build/src/test/recovery/tmp_check/log/017_shm_gnat.log; false }
+            su builder -c "dpkg-buildpackage -us -uc -B" || ( \
+              cat ${{ github.workspace }}/build/src/test/recovery/tmp_check/log/017_shm_gnat.log; false )
             su builder -c "mkdir -p /tmp/debs"
             su builder -c "dcmd mv ../*.changes /tmp/debs/ 2>/dev/null || true"
           fi
