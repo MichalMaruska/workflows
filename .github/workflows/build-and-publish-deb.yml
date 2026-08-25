@@ -107,9 +107,6 @@ jobs:
           fetch-depth: 0 # Get all history for tagging
           submodules: true
 
-      - name: Enable io_uring
-        run: sudo sysctl -w kernel.io_uring_disabled=0
-
       - name: Resolve upstream sources
         id: upstream
         run: |
