@@ -35,7 +35,7 @@ jobs:
     # create GitHub release with all debs
       - name: Download amd64 artifacts
         if: contains(fromJson(inputs.artifacts), 'debs-amd64')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: debs-amd64
           path:  ${{ env.RESULTS_DIR }}
@@ -43,7 +43,7 @@ jobs:
 
       - name: Download arm64 artifacts
         if: contains(fromJson(inputs.artifacts), 'debs-arm64')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: debs-arm64
           path: ${{ env.RESULTS_DIR }}
@@ -52,7 +52,7 @@ jobs:
 
       - name: Download arch-indep artifacts
         if: contains(fromJson(inputs.artifacts), 'debs-indep')
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: debs-indep
           path: ${{ env.RESULTS_DIR }}
@@ -66,7 +66,7 @@ jobs:
             find ${{ env.RESULTS_DIR }} -type f | sort
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.release }}
           files: ${{ env.RESULTS_DIR }}/*
